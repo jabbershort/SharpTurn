@@ -112,6 +112,7 @@ namespace rotation_converter
         {
             // TODO: Convert quat to euler
             // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+            // https://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/index.htm
             // EulerAngles ToEulerAngles(Quaternion q) {
             //     EulerAngles angles;
 
@@ -143,11 +144,13 @@ namespace rotation_converter
         public float[][] AsMatrix()
         {
             // TODO: convert quat to matrix
+            // https://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm
         }
 
         public static Rotation FromEuler(float[] angles)
         {  
             // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+            // https://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm
             float roll = Deg2Rad*angles[0];
             float pitch = Deg2Rad*angles[1];
             float yaw = Deg2Rad*angles[2];
@@ -174,6 +177,7 @@ namespace rotation_converter
         public static Rotation FromMatrix(float[] row1, float[] row2, float[] row3)
         {
             // TODO: convert matrix to quat
+            https://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
         }
 
 
