@@ -28,6 +28,7 @@ namespace rotation_converter
         public static float quatTolerance = 0.1f;
         public static float eulerTolerance = 1f;
         public static float matrixTolerance = 0.1f;
+        
         public static bool EulerToQuat(float[] euler, float[] expectedQuat)
         {
             Rotation r = Rotation.FromEuler(euler);
@@ -38,54 +39,41 @@ namespace rotation_converter
             {
                 totalError += Math.Abs(expectedQuat[i]-qCalc[i]);
             }
-            if (totalError<quatTolerance)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            if (totalError<quatTolerance) { return true;}
+            else { return false;}
         }
         public static bool EulerToMatrix(float[] euler, float[][] expectedMat)
         {
-            bool pass = false;
+            Rotation r = Rotation.FromEuler(euler);
+            float[][] calculatedMatrix = r.AsMatrix();
 
-            // TODO: Test function here.
+            float totalError = 0;
+            for (int i = 0;i<3;i++)
+            {
+                for (int j =0;j<3;j++)
+                {
+                    totalError += Math.Abs(expectedMatrix[i][j]-calculatedMatrix[i][j]);
+                }
+            }
+            if (totalError< matrixToleranc) { return true;}
+            else { return false;}
 
-            return pass;
         }
         public static bool QuatToEuler(float[] quat, float[] expectedEuler)
         {
-            bool pass = false;
-            
-            // TODO: Test function here.
-
-            return pass;
+            Rotation r = Rotation.FromQuat(quat);
         }
         public static bool QuatToMatrix(float[] quat, float[][] expectedMat)
         {
-            bool pass = false;
-
-            // TODO: Test function here.
-
-            return pass;
+            Rotation r = Rotation.FromQuat(quat);
         }
         public static bool MatrixToEuler(float[][] matrix, float[] expectedEuler)
         {
-            bool pass = false;
-
-            // TODO: Test function here.
-
-            return pass;
+            Rotation r = Rotation.FromMatrix(matrix);
         }
         public static bool MatrixToQuat(float[][] matrix, float[] expectedQuat)
         {
-            bool pass = false;
-
-            // TODO: Test function here.
-
-            return pass;
+            Rotation r = Rotation.FromMatrix(matrix);
         }
 
     }
