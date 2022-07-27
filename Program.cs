@@ -16,9 +16,26 @@ namespace rotation_converter
                 string jsonString = file.ReadToEnd();
                 data = JsonConvert.DeserializeObject<List<Dictionary<string,dynamic>>>(jsonString);
             }
+            int e2q_total = 0;
+            int e2m_total = 0;
+            int q2e_total = 0;
+            int q2m_total = 0;
+            int m2e_total = 0;
+            int m2q_total = 0;
+            int num_tests = data.Count;
             foreach(Dictionary<string,dynamic> entry in data)
             {
+                float[] euler = entry["euler"];
+                float[] quat = entry["quat"];
+                float[][] matrix = entry["matrix"];
                 Console.WriteLine(entry["euler"][0]);
+                bool e2q = RotationTester.EulerToQuat(euler,quat);
+                bool e2m = RotationTester.EulerToMatrix(euler,matrix);
+                bool q2e = RotationTester.QuatToEuler(quat,euler);
+                bool q2m = RotationTester.QuatToMatrix(quat,matrix);
+                bool m2e = RotationTester.MatrixToEuler(matrix,euler);
+                bool m2q = RotationTester.MatrixToQuat(matrix,quat);
+
             }
         }
     }
@@ -32,27 +49,27 @@ namespace rotation_converter
         public static bool EulerToQuat(float[] euler, float[] expectedQuat)
         {
             Rotation r = Rotation.FromEuler(euler);
-            float[] qCalc = r.AsQuat();
+            float[] calculatedQuat = r.AsQuat();
 
             float totalError = 0;  
             for (int i = 0;i<qCalc.Length;i++)
             {
-                totalError += Math.Abs(expectedQuat[i]-qCalc[i]);
+                totalError += Math.Abs(expectedQuat[i]-calculatedQuat[i]);
             }
             if (totalError<quatTolerance) { return true;}
             else { return false;}
         }
-        public static bool EulerToMatrix(float[] euler, float[][] expectedMat)
+        public static bool EulerToMatrix(float[] euler, float[,] expectedMat)
         {
             Rotation r = Rotation.FromEuler(euler);
-            float[][] calculatedMatrix = r.AsMatrix();
+            float[,] calculatedMatrix = r.AsMatrix();
 
             float totalError = 0;
             for (int i = 0;i<3;i++)
             {
                 for (int j =0;j<3;j++)
                 {
-                    totalError += Math.Abs(expectedMatrix[i][j]-calculatedMatrix[i][j]);
+                    totalError += Math.Abs(expectedMatrix[i,j]-calculatedMatrix[i,j]);
                 }
             }
             if (totalError< matrixToleranc) { return true;}
@@ -62,18 +79,57 @@ namespace rotation_converter
         public static bool QuatToEuler(float[] quat, float[] expectedEuler)
         {
             Rotation r = Rotation.FromQuat(quat);
+            float[] calculatedEuler = r.AsEuler();
+
+            float totalError = 0;  
+            for (int i = 0;i<qCalc.Length;i++)
+            {
+                totalError += Math.Abs(expectedQuat[i]-calculatedQuat[i]);
+            }
+            if (totalError<eulerTolerance) { return true;}
+            else { return false;}
         }
-        public static bool QuatToMatrix(float[] quat, float[][] expectedMat)
+        public static bool QuatToMatrix(float[] quat, float[,] expectedMat)
         {
             Rotation r = Rotation.FromQuat(quat);
+            float[,] calculatedMatrix = r.AsMatrix();
+            
+            float totalError = 0;
+            for (int i = 0;i<3;i++)
+            {
+                for (int j =0;j<3;j++)
+                {
+                    totalError += Math.Abs(expectedMatrix[i,j]-calculatedMatrix[i,j]);
+                }
+            }
+            if (totalError< matrixToleranc) { return true;}
+            else { return false;}
         }
-        public static bool MatrixToEuler(float[][] matrix, float[] expectedEuler)
+        public static bool MatrixToEuler(float[,] matrix, float[] expectedEuler)
         {
             Rotation r = Rotation.FromMatrix(matrix);
+            float[] calculatedEuler = r.AsEuler();
+
+            float totalError = 0;  
+            for (int i = 0;i<qCalc.Length;i++)
+            {
+                totalError += Math.Abs(expectedQuat[i]-calculatedQuat[i]);
+            }
+            if (totalError<eulerTolerance) { return true;}
+            else { return false;}
         }
-        public static bool MatrixToQuat(float[][] matrix, float[] expectedQuat)
+        public static bool MatrixToQuat(float[,] matrix, float[] expectedQuat)
         {
             Rotation r = Rotation.FromMatrix(matrix);
+            float[] calculatedQuat = r.AsQuat();
+            
+            float totalError = 0;  
+            for (int i = 0;i<qCalc.Length;i++)
+            {
+                totalError += Math.Abs(expectedQuat[i]-calculatedQuat[i]);
+            }
+            if (totalError<quatTolerance) { return true;}
+            else { return false;}
         }
 
     }
@@ -101,38 +157,49 @@ namespace rotation_converter
             // TODO: Convert quat to euler
             // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
             // https://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/index.htm
-            // EulerAngles ToEulerAngles(Quaternion q) {
-            //     EulerAngles angles;
+            float[] euler = new float[3];
 
-            //     // roll (x-axis rotation)
-            //     double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
-            //     double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
-            //     angles.roll = std::atan2(sinr_cosp, cosr_cosp);
+            double sinr_cosp = 2 * (w * x + y * z);
+            double cosr_cosp = 1 - 2 * (x * x + y * y);
+            euler[0] = Rad2Deg*Math.Atan2(sinr_cosp,cosr_cosp);
 
-            //     // pitch (y-axis rotation)
-            //     double sinp = 2 * (q.w * q.y - q.z * q.x);
-            //     if (std::abs(sinp) >= 1)
-            //         angles.pitch = std::copysign(M_PI / 2, sinp); // use 90 degrees if out of range
-            //     else
-            //         angles.pitch = std::asin(sinp);
+            double sinp = 2 * (w * y - z * x);
+            if (Math.Abs(sinp) >= 1)
+                euler[1] = Rad2Deg * Math.Abs(Math.PI / 2)*Math.Sign(sinp);
+            else
+                euler[1] = Rad2Deg * Math.Asin(sinp);
 
-            //     // yaw (z-axis rotation)
-            //     double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
-            //     double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
-            //     angles.yaw = std::atan2(siny_cosp, cosy_cosp);
+            double siny_cosp = 2 * (w * z + x * y);
+            double cosy_cosp = 1 - 2 * (y * y + z * z);
+            euler[2] = Rad2Deg * Math.Atan2(siny_cosp, cosy_cosp);
 
-            //     return angles;
-            // }
+            return euler;
         }
 
         public float[] AsQuat()
         {
             return new float[4]{x,y,z,w};            
         }
-        public float[][] AsMatrix()
+        public float[,] AsMatrix()
         {
             // TODO: convert quat to matrix
             // https://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm
+            float[] row1 = new float[3]{
+                1 - 2*Math.Pow(y,2) - 2*Math.Pow(z,2),
+                2*x*y - 2*z*w,
+                2*x*z + 2*y*w
+            };
+            float[] row2 = new float[3]{
+                2*x*y + 2*z*w,
+ 	            1 - 2*Math.Pow(x,2) - 2*Math.Pow(z,2),
+     	        2*y*z - 2*x*w
+            };
+            float[] row3 = new float[3]{
+                2*x*z - 2*y*w,
+ 	            2*y*z + 2*x*w,
+                1 - 2*Math.Pow(x,2) - 2*Math.Pow(y,2) 
+            };
+            return new float[,] = new float[3,3]{row1,row2,row3};
         }
 
         public static Rotation FromEuler(float[] angles)
@@ -166,6 +233,11 @@ namespace rotation_converter
         {
             // TODO: convert matrix to quat
             https://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
+            float w= Math.Sqrt(1 + row1[0] + row2[1] + row3[2]) /2;
+            float x = (row3[1] - row2[2])/(4 *w);
+            float y = (row1[2] - row3[0])/( 4 *w);
+            float z = (row2[0] - row1[1])/( 4 *w);
+            return new Rotation(x,y,z,w);
         }
 
 
