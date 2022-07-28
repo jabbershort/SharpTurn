@@ -20,7 +20,7 @@ namespace SharpTurn
             }
             if (totalError<quatTolerance) 
             { 
-                if (verbose) { Console.WriteLine(string.Format("Euler To Quaternion test passed. Expected Value: {0}. Calculated Value: {1}. Error: {2}.",DebugUtility.FloatArrayAsString(expectedQuat),DebugUtility.FloatArrayAsString(calculatedQuat),totalError));}
+                // if (verbose) { Console.WriteLine(string.Format("Euler To Quaternion test passed. Expected Value: {0}. Calculated Value: {1}. Error: {2}.",DebugUtility.FloatArrayAsString(expectedQuat),DebugUtility.FloatArrayAsString(calculatedQuat),totalError));}
                 return true;
             }
             else 
@@ -44,7 +44,7 @@ namespace SharpTurn
             }
             if (totalError< matrixTolerance)            
             { 
-                if (verbose) { Console.WriteLine(string.Format("Euler To Matrix test passed. Expected Value: {0}. Calculated Value: {1}. Error: {2}.",DebugUtility.FloatArrayAsString(expectedMatrix),DebugUtility.FloatArrayAsString(calculatedMatrix),totalError));}
+                // if (verbose) { Console.WriteLine(string.Format("Euler To Matrix test passed. Expected Value: {0}. Calculated Value: {1}. Error: {2}.",DebugUtility.FloatArrayAsString(expectedMatrix),DebugUtility.FloatArrayAsString(calculatedMatrix),totalError));}
                 return true;
             }
             else 
@@ -66,7 +66,7 @@ namespace SharpTurn
             }
             if (totalError<eulerTolerance)
             { 
-                if (verbose) { Console.WriteLine(string.Format("Quaternion To Euler test passed. Expected Value: {0}. Calculated Value: {1}. Error: {2}.",DebugUtility.FloatArrayAsString(expectedEuler),DebugUtility.FloatArrayAsString(calculatedEuler),totalError));}
+                // if (verbose) { Console.WriteLine(string.Format("Quaternion To Euler test passed. Expected Value: {0}. Calculated Value: {1}. Error: {2}.",DebugUtility.FloatArrayAsString(expectedEuler),DebugUtility.FloatArrayAsString(calculatedEuler),totalError));}
                 return true;
             }
             else 
@@ -90,7 +90,7 @@ namespace SharpTurn
             }
             if (totalError< matrixTolerance)
             { 
-                if (verbose) { Console.WriteLine(string.Format("Quaternion To Matrix test passed. Expected Value: {0}. Calculated Value: {1}. Error: {2}.",DebugUtility.FloatArrayAsString(expectedMatrix),DebugUtility.FloatArrayAsString(expectedMatrix),totalError));}
+                // if (verbose) { Console.WriteLine(string.Format("Quaternion To Matrix test passed. Expected Value: {0}. Calculated Value: {1}. Error: {2}.",DebugUtility.FloatArrayAsString(expectedMatrix),DebugUtility.FloatArrayAsString(expectedMatrix),totalError));}
                 return true;
             }
             else 
@@ -111,7 +111,7 @@ namespace SharpTurn
             }
             if (totalError<eulerTolerance) 
             { 
-                if (verbose) { Console.WriteLine(string.Format("Matrix To Euler test passed. Expected Value: {0}. Calculated Value: {1}. Error: {2}.",DebugUtility.FloatArrayAsString(expectedEuler),DebugUtility.FloatArrayAsString(calculatedEuler),totalError));}
+                // if (verbose) { Console.WriteLine(string.Format("Matrix To Euler test passed. Expected Value: {0}. Calculated Value: {1}. Error: {2}.",DebugUtility.FloatArrayAsString(expectedEuler),DebugUtility.FloatArrayAsString(calculatedEuler),totalError));}
                 return true;
             }
             else 
@@ -122,7 +122,6 @@ namespace SharpTurn
         }
         public static bool MatrixToQuat(float[,] matrix, float[] expectedQuat, bool verbose = false)
         {
-            // TODO: getting 10% failure rate.
             Rotation r = Rotation.FromMatrix(matrix);
             float[] calculatedQuat = r.AsQuat();
             
@@ -133,7 +132,7 @@ namespace SharpTurn
             }
             if (totalError<quatTolerance)
             { 
-                if (verbose) { Console.WriteLine(string.Format("Matrix To Quaternion test passed. Expected Value: {0}. Calculated Value: {1}. Error: {2}.",DebugUtility.FloatArrayAsString(expectedQuat),DebugUtility.FloatArrayAsString(calculatedQuat),totalError));}
+                // if (verbose) { Console.WriteLine(string.Format("Matrix To Quaternion test passed. Expected Value: {0}. Calculated Value: {1}. Error: {2}.",DebugUtility.FloatArrayAsString(expectedQuat),DebugUtility.FloatArrayAsString(calculatedQuat),totalError));}
                 return true;
             }
             else 

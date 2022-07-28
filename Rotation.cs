@@ -158,12 +158,56 @@ namespace SharpTurn
         /// <returns>Rotation</returns>
         public static Rotation FromMatrix(float[,] matrix)
         {
-            https://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
+            // https://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
+
+            // version 1
+            // float x,y,z,w;
+            // float trace = matrix[0,0] + matrix[1,1] + matrix[2,2]; // I removed + 1.0f; see discussion with Ethan
+            // if( trace > 0 ) 
+            // {// I changed M_EPSILON to 0
+            //     float s = 0.5f / (float)Math.Sqrt(trace+ 1.0f);
+            //     w = 0.25f / s;
+            //     x = ( matrix[2,1] - matrix[1,2] ) * s;
+            //     y = ( matrix[0,2] - matrix[2,0] ) * s;
+            //     z = ( matrix[1,0] - matrix[0,1] ) * s;
+            // } 
+            // else 
+            // {
+            //     if ( matrix[0,0] > matrix[1,1] && matrix[0,0] > matrix[2,2] ) 
+            //     {
+            //         float s = 2.0f * (float)Math.Sqrt( 1.0f + matrix[0,0] - matrix[1,1] - matrix[2,2]);
+            //         w = (matrix[2,1] - matrix[1,2] ) / s;
+            //         x = 0.25f * s;
+            //         y = (matrix[0,1] + matrix[1,0] ) / s;
+            //         z = (matrix[0,2] + matrix[2,0] ) / s;
+            //     } 
+            //     else if (matrix[1,1] > matrix[2,2]) 
+            //     {
+            //         float s = 2.0f * (float)Math.Sqrt( 1.0f + matrix[1,1] - matrix[0,0] - matrix[2,2]);
+            //         w = (matrix[0,2] - matrix[2,0] ) / s;
+            //         x = (matrix[0,1] + matrix[1,0] ) / s;
+            //         y = 0.25f * s;
+            //         z = (matrix[1,2] + matrix[2,1] ) / s;
+            //     } 
+            //     else 
+            //     {
+            //         float s = 2.0f * (float)Math.Sqrt( 1.0f + matrix[2,2] - matrix[0,0] - matrix[1,1] );
+            //         w = (matrix[1,0] - matrix[0,1] ) / s;
+            //         x = (matrix[0,2] + matrix[2,0] ) / s;
+            //         y = (matrix[1,2] + matrix[2,1] ) / s;
+            //         z = 0.25f * s;
+            //     }
+            // }
+            // Version 2
             float w= (float)Math.Sqrt(1 + (double)matrix[0,0] + (double)matrix[1,1] + (double)matrix[2,2]) /2;
             float x = (matrix[2,1] - matrix[1,2])/(4 *w);
             float y = (matrix[0,2] - matrix[2,0])/( 4 *w);
             float z = (matrix[1,0] - matrix[0,1])/( 4 *w);
-            return new Rotation(x,y,z,w);
+            Rotation r = new Rotation(x,y,z,w);
+            // WTF, why is this the way it works best !!
+            // TODO: Fix this shitty method.
+            float[] euler = r.AsEuler();
+            return Rotation.FromEuler(euler);
         }
     }
 }
