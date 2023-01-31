@@ -200,28 +200,28 @@ namespace SharpTurn
             //     }
             // }
             // Version 2
-            // float w= (float)Math.Sqrt(1 + (double)matrix[0,0] + (double)matrix[1,1] + (double)matrix[2,2]) /2;
-            // float x = (matrix[2,1] - matrix[1,2])/(4 *w);
-            // float y = (matrix[0,2] - matrix[2,0])/( 4 *w);
-            // float z = (matrix[1,0] - matrix[0,1])/( 4 *w);
-            // Rotation r = new Rotation(x,y,z,w);
+            float w= (float)Math.Sqrt(1 + (double)matrix[0,0] + (double)matrix[1,1] + (double)matrix[2,2]) /2;
+            float x = (matrix[2,1] - matrix[1,2])/(4 *w);
+            float y = (matrix[0,2] - matrix[2,0])/( 4 *w);
+            float z = (matrix[1,0] - matrix[0,1])/( 4 *w);
+            Rotation r = new Rotation(x,y,z,w);
             // WTF, why is this the way it works best !!
             // TODO: Fix this shitty method.
-            // float[] euler = r.AsEuler();
-            // return Rotation.FromEuler(euler);
+            float[] euler = r.AsEuler();
+            return Rotation.FromEuler(euler);
             // Version 3
-            Matrix4x4 mat = new Matrix4x4();
-            mat.M11 = matrix[0,0];
-            mat.M12 = matrix[0,1];
-            mat.M13 = matrix[0,2];
-            mat.M21 = matrix[1,0];
-            mat.M22 = matrix[1,1];
-            mat.M23 = matrix[1,2];
-            mat.M31 = matrix[2,0];
-            mat.M32 = matrix[2,1];
-            mat.M33 = matrix[2,2];
-            Quaternion q = Quaternion.CreateFromRotationMatrix(mat);
-            return Rotation.FromQuat(new float[4]{q.X,q.Y,q.Z,q.W});
+        //     Matrix4x4 mat = new Matrix4x4();
+        //     mat.M11 = matrix[0,0];
+        //     mat.M12 = matrix[0,1];
+        //     mat.M13 = matrix[0,2];
+        //     mat.M21 = matrix[1,0];
+        //     mat.M22 = matrix[1,1];
+        //     mat.M23 = matrix[1,2];
+        //     mat.M31 = matrix[2,0];
+        //     mat.M32 = matrix[2,1];
+        //     mat.M33 = matrix[2,2];
+        //     Quaternion q = Quaternion.CreateFromRotationMatrix(mat);
+        //     return Rotation.FromQuat(new float[4]{q.X,q.Y,q.Z,q.W});
         }
 
         public override string ToString()
